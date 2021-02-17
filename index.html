@@ -84,7 +84,35 @@
       // The main difference from fetchOne() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
-        // TODO
+        //unhide inputs for Author and Title
+        document.getElementById("recordForm").style.display = "none";
+
+        //unhide Id input
+        document.getElementById("recordIDcontainer").style.display = "none";
+
+        // endpoint
+        let endpoint = document.getElementById("endpoint").value;
+
+        // fetch
+        fetch(endpoint, {
+          // get
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+
+          }
+        }).then(function(response) {
+            // check for errors in endpoint
+            if(response.ok === false) {
+              document.getElementById("output").innerHTML = response.status + ":" + response.statusText;
+              return;
+            } else {
+              // proceed with display
+              response.text().then(function(text) {
+                document.getElementById("output").innerHTML = text;
+              });
+            }
+        });
       }
 
       // This function should fetch one entry from the given endpoint.
@@ -92,7 +120,37 @@
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchOne() {
-        // TODO
+        //unhide inputs for Author and Title
+        document.getElementById("recordForm").style.display = "none";
+
+        //unhide Id input
+        document.getElementById("recordIDcontainer").style.display = "none";
+
+        // get input from prompt
+        let input = prompt("Enter record id:");
+        // endpoint w/ id
+        let endpoint = document.getElementById("endpoint").value + "/" + input;
+
+        // fetch
+        fetch(endpoint, {
+          // get
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+
+          }
+        }).then(function(response) {
+            // check for errors in endpoint
+            if(response.ok === false) {
+              document.getElementById("output").innerHTML = response.status + ":" + response.statusText;
+              return;
+            } else {
+              // proceed with display
+              response.text().then(function(text) {
+                document.getElementById("output").innerHTML = text;
+              });
+            }
+        });
       }
 
       // This function should use fetch to create one entry in the given endpoint.
@@ -100,7 +158,46 @@
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function createRecord() {
-        // TODO
+        //unhide inputs for Author and Title
+        document.getElementById("recordForm").style.display = "block";
+
+        //unhide Id input
+        document.getElementById("recordIDcontainer").style.display = "none";
+
+        // grab input from input tags
+        let titleStr = document.getElementById("title").value;
+        let authorStr = document.getElementById("author").value;
+
+        // endpoint
+        let endpoint = document.getElementById("endpoint").value;
+
+        // fetch
+        // don't make a new block first button press
+        if(titleStr !== "" || authorStr !== "") {
+          fetch(endpoint, {
+            // create
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+              "title": titleStr,
+              "author": authorStr
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(function(response) {
+              // check for errors in endpoint
+              if(response.ok === false) {
+                document.getElementById("output").innerHTML = response.status + ":" + response.statusText;
+                return;
+              } else {
+                // proceed with display
+                response.text().then(function(text) {
+                  document.getElementById("output").innerHTML = text;
+                });
+              }
+          });
+        }
       }
 
       // This function should use fetch to update one existing entry in the given endpoint.
@@ -108,7 +205,47 @@
       // The main difference from createRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function updateRecord() {
-        // TODO
+        //unhide inputs for Author and Title
+        document.getElementById("recordForm").style.display = "block";
+
+        //unhide Id input
+        document.getElementById("recordIDcontainer").style.display = "block";
+
+        // grab input from input tags
+        let titleStr = document.getElementById("title").value;
+        let authorStr = document.getElementById("author").value;
+        let idNum = document.getElementById("recordID").value;
+
+        // endpoint
+        let endpoint = document.getElementById("endpoint").value + "/" + idNum;
+
+        // fetch
+        // don't make a new block first button press
+        if(idNum !== "") {
+          fetch(endpoint, {
+            // update
+            method: 'PUT',
+            mode: 'cors',
+            body: JSON.stringify({
+              "title": titleStr,
+              "author": authorStr
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(function(response) {
+              // check for errors in endpoint
+              if(response.ok === false) {
+                document.getElementById("output").innerHTML = response.status + ":" + response.statusText;
+                return;
+              } else {
+                // proceed with display
+                response.text().then(function(text) {
+                  document.getElementById("output").innerHTML = text;
+                });
+              }
+          });
+        }
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
@@ -117,7 +254,41 @@
       // request; check the writeup to view the URL pattern for get one and delete. THERE IS NO 
       // delete all, only delete one.
       function deleteRecord() {
-        // TODO
+        //unhide inputs for Author and Title
+        document.getElementById("recordForm").style.display = "none";
+
+        //unhide Id input
+        document.getElementById("recordIDcontainer").style.display = "none";
+
+        // grab input from input tags
+        let idNum = prompt("Enter record id:");
+
+        // endpoint
+        let endpoint = document.getElementById("endpoint").value + "/" + idNum;
+
+        // fetch
+        fetch(endpoint, {
+          // delete
+          method: 'DELETE',
+          mode: 'cors',
+          body: JSON.stringify({
+            "id": idNum
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function(response) {
+            // check for errors in endpoint
+            if(response.ok === false) {
+              document.getElementById("output").innerHTML = response.status + ":" + response.statusText;
+              return;
+            } else {
+              // proceed with display
+              response.text().then(function(text) {
+                document.getElementById("output").innerHTML = text;
+              });
+            }
+        });
       }
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -127,6 +298,12 @@
           .addEventListener("submit", event => {
             event.preventDefault();
             let command = document.getElementById('action').value;
+
+            // set everything to default at button press
+            document.getElementById("title").value = "";
+            document.getElementById("author").value = "";
+            document.getElementById("recordID").value = "";
+            document.getElementById("output").innerHTML = "";
 
             switch (command) {
               case "List All":
